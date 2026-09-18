@@ -1,0 +1,33 @@
+# Firebase secret
+models/firebase_key.json
+
+# Local datasets and captures
+data/
+
+# AquaTrace local dashboard state
+.aquatrace_dashboard_state.json
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.log
+
+# Local development
+.vscode/
+.idea/

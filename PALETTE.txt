@@ -1,0 +1,11 @@
+AquaTrace FINAL HOD/Conference UI palette.
+
+Design intent:
+- Dark navy/slate foundation for scientific instrumentation context.
+- Muted blue, green, red, orange, mustard yellow and plum accents.
+- Polymer cards use one consistent geometry and layout; only the accent colour changes by polymer.
+- Confidence rings are identical in size, track, border and typography across all cards.
+- KPI cards use consistent geometry with five restrained accent colours.
+- Guidance cards and status elements reuse the same palette system.
+- No neon colours, fluorescent glow, luminous gradients, or excessive glow effects.
+- Real Firebase/current-session data logic is unchanged.

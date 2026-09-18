@@ -1,0 +1,28 @@
+AquaTrace — FINAL HOD / CONFERENCE DASHBOARD
+
+1. Replace scripts/main_demo.py with the supplied version.
+2. Replace flask_dashboard.py in the project root.
+3. Replace the project's frontend/ folder with the supplied frontend/ folder.
+4. Keep models/firebase_key.json exactly where it already is.
+5. Do not add Firebase Storage or image uploads; the dashboard works with RTDB data only.
+
+RUN ORDER
+Terminal 1:
+  python flask_dashboard.py
+
+Open:
+  http://127.0.0.1:5000
+
+The dashboard starts empty on every Flask launch. It does not expose old Firebase history.
+
+Terminal 2:
+  python scripts/main_demo.py
+
+Run LIVE or LOCAL. Results appear only after this fresh run pushes records.
+
+DESIGN
+- Professional scientific dashboard styling suitable for HOD/conference presentation.
+- Muted blue, green, red, orange, mustard yellow and plum accents.
+- Consistent confidence-ring geometry across every result card.
+- No neon colours, fluorescent glow, or glow-heavy effects.
+- Data remains real/current-session Firebase data; no demo values are embedded.

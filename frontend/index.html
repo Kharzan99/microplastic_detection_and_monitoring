@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0d151f" />
+  <title>AquaTrace — Microplastic Monitoring</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></div>
+        <div>
+          <div class="brand-name">AquaTrace</div>
+          <div class="brand-sub">Microplastic Intelligence</div>
+        </div>
+      </div>
+
+      <nav class="nav" aria-label="Primary navigation">
+        <button class="nav-item active" data-tab="results" type="button">
+          <span class="nav-icon">◈</span>
+          <span>Results</span>
+          <span class="nav-count" id="navCount">0</span>
+        </button>
+        <button class="nav-item" data-tab="guidance" type="button">
+          <span class="nav-icon">⌁</span>
+          <span>Guidance</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <div class="system-card">
+          <div class="system-head">
+            <span class="status-dot" id="statusDot"></span>
+            <span id="connectionText">Connecting…</span>
+          </div>
+          <div class="system-copy">Firebase Realtime Database</div>
+          <div class="system-copy muted" id="lastSync">Waiting for first sync</div>
+        </div>
+        <div class="sidebar-footer">AquaTrace • live project data only</div>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <button class="mobile-menu" id="mobileMenu" aria-label="Open menu">☰</button>
+        <div>
+          <div class="eyebrow">FRESHWATER MICROPLASTIC MONITORING</div>
+          <h1 id="pageTitle">Detection Results</h1>
+        </div>
+        <div class="top-actions">
+          <div class="live-pill"><span class="live-dot"></span> DATA LINK</div>
+          <button class="refresh-btn" id="refreshBtn" type="button" title="Refresh now">↻</button>
+        </div>
+      </header>
+
+      <section class="tab-panel active" id="resultsPanel">
+        <div class="hero-row">
+          <div>
+            <h2>Sample intelligence</h2>
+            <p>One successful Firebase reading becomes one result card. No sample, count, confidence or polymer value is invented by the dashboard.</p>
+          </div>
+          <div class="hero-chip" id="dataSource">Waiting for Firebase data</div>
+        </div>
+
+        <section class="kpi-grid" aria-label="Live summary metrics">
+          <article class="kpi-card accent">
+            <div class="kpi-icon">◎</div>
+            <div>
+              <div class="kpi-label">Total tests</div>
+              <div class="kpi-value" id="totalTests">0</div>
+              <div class="kpi-note" id="testSplit">0 live · 0 local</div>
+            </div>
+          </article>
+          <article class="kpi-card">
+            <div class="kpi-icon">✦</div>
+            <div>
+              <div class="kpi-label">Particles counted</div>
+              <div class="kpi-value" id="particleTotal">0</div>
+              <div class="kpi-note">Sum of returned particle counts</div>
+            </div>
+          </article>
+          <article class="kpi-card">
+            <div class="kpi-icon">◌</div>
+            <div>
+              <div class="kpi-label">Average confidence</div>
+              <div class="kpi-value" id="avgConfidence">—</div>
+              <div class="kpi-note">Across available readings</div>
+            </div>
+          </article>
+          <article class="kpi-card">
+            <div class="kpi-icon">◇</div>
+            <div>
+              <div class="kpi-label">Polymer classes</div>
+              <div class="kpi-value" id="polymerKinds">0</div>
+              <div class="kpi-note">Distinct classes actually returned</div>
+            </div>
+          </article>
+          <article class="kpi-card">
+            <div class="kpi-icon">↗</div>
+            <div>
+              <div class="kpi-label">Records</div>
+              <div class="kpi-value" id="visibleCount">0</div>
+              <div class="kpi-note">Matching current filters</div>
+            </div>
+          </article>
+        </section>
+
+        <section class="distribution-panel">
+          <div class="panel-heading">
+            <div>
+              <div class="section-label no-margin">Polymer distribution</div>
+              <p>Generated from the polymer field in the Firebase records.</p>
+            </div>
+          </div>
+          <div class="distribution-list" id="polymerDistribution">
+            <span class="muted">No readings available yet.</span>
+          </div>
+        </section>
+
+        <section class="results-toolbar">
+          <div class="toolbar-left">
+            <div class="result-heading">
+              <h3 id="analysisHeading">Current analysis</h3>
+              <div class="run-info" id="runInfo">Loading current run…</div>
+              <span id="runScopeLabel" class="sr-only">Current run</span>
+            </div>
+            <div class="segmented" role="tablist" aria-label="Run scope">
+              <button class="seg-btn active" data-scope="current" type="button">Current run</button>
+            </div>
+            <div class="segmented" role="tablist" aria-label="Mode filter">
+              <button class="seg-btn active" data-mode="all" type="button">All</button>
+              <button class="seg-btn" data-mode="live" type="button">Live</button>
+              <button class="seg-btn" data-mode="folder" type="button">Local</button>
+            </div>
+          </div>
+          <div class="toolbar-right">
+            <select id="polymerFilter" class="filter-select" aria-label="Filter polymer">
+              <option value="all">All polymers</option>
+            </select>
+            <select id="wavelengthFilter" class="filter-select" aria-label="Filter wavelength">
+              <option value="all">All wavelengths</option>
+            </select>
+            <input id="searchBox" class="search-box" type="search" placeholder="Search session, device, polymer…" />
+          </div>
+        </section>
+
+        <section class="results-grid" id="resultsGrid" aria-live="polite">
+          <div class="loading-state" id="loadingState">
+            <div class="spinner"></div>
+            <h3>Loading real AquaTrace results</h3>
+            <p>Reading the current records from Firebase through the Flask backend…</p>
+          </div>
+        </section>
+      </section>
+
+      <section class="tab-panel" id="guidancePanel">
+        <div class="guidance-hero">
+          <div>
+            <div class="eyebrow">CITIZEN GUIDANCE</div>
+            <h2>Understand microplastic screening</h2>
+            <p>A public-facing guide for households, schools, community groups and people using freshwater sources.</p>
+          </div>
+          <div class="water-orbit" aria-hidden="true"><div class="orbit-core">H₂O</div></div>
+        </div>
+
+        <div class="guidance-grid">
+          <article class="guide-card large">
+            <div class="guide-number">01</div>
+            <h3>What an AquaTrace result means</h3>
+            <p>AquaTrace is designed as a screening system. A polymer label is the class suggested by the current machine-learning model, while confidence represents the model's output for that prediction.</p>
+            <div class="callout">A screening result is not the same as laboratory-certified polymer concentration or regulatory confirmation.</div>
+          </article>
+
+          <article class="guide-card">
+            <div class="guide-number">02</div>
+            <h3>Reduce plastic reaching water</h3>
+            <ul>
+              <li>Use reusable bottles, bags and containers where practical.</li>
+              <li>Keep plastic waste out of drains, lakes, rivers and streams.</li>
+              <li>Separate plastic waste for the collection system available in your area.</li>
+              <li>Do not burn plastic waste or dispose of it into open water.</li>
+            </ul>
+          </article>
+
+          <article class="guide-card">
+            <div class="guide-number">03</div>
+            <h3>Remember synthetic fibres</h3>
+            <p>Textiles made from synthetic polymers can release small fibres during use and washing. Good laundry and wastewater practices can help reduce the amount reaching the environment.</p>
+          </article>
+
+          <article class="guide-card">
+            <div class="guide-number">04</div>
+            <h3>Protect sampling points</h3>
+            <p>Keep sample containers clean, avoid touching the inside surfaces, and follow a consistent sampling procedure so repeated tests are easier to compare.</p>
+          </article>
+
+          <article class="guide-card large">
+            <div class="guide-number">05</div>
+            <h3>When a sample is flagged</h3>
+            <div class="steps">
+              <div class="step"><span>1</span><div><b>Record</b><small>Note the date, sampling point, sample type and AquaTrace result.</small></div></div>
+              <div class="step"><span>2</span><div><b>Repeat</b><small>Repeat the screening with a representative sample when practical.</small></div></div>
+              <div class="step"><span>3</span><div><b>Confirm</b><small>Use an appropriate laboratory method when definitive identification is required.</small></div></div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <footer class="footer-note">AquaTrace • Python + Flask dashboard • Firebase RTDB • No image storage required</footer>
+    </main>
+  </div>
+
+  <template id="resultCardTemplate">
+    <article class="result-card">
+      <div class="card-topline">
+        <div class="mode-badge"></div>
+        <div class="timestamp"></div>
+      </div>
+
+      <div class="card-main">
+        <div class="polymer-identity">
+          <div class="polymer-symbol"></div>
+          <div>
+            <div class="polymer-kicker">Detected polymer</div>
+            <div class="polymer-name"></div>
+            <div class="polymer-full-name"></div>
+            <div class="polymer-descriptor"></div>
+          </div>
+        </div>
+        <div class="confidence-ring">
+          <div class="confidence-value"></div>
+          <div class="confidence-label">confidence</div>
+        </div>
+      </div>
+
+      <div class="detail-grid">
+        <div class="detail-box"><span>Particles</span><b class="particles"></b></div>
+        <div class="detail-box"><span>Primary λ</span><b class="primary-wl"></b></div>
+        <div class="detail-box"><span>Captured λ</span><b class="captured-wl"></b></div>
+      </div>
+
+      <div class="section-label">Class probabilities</div>
+      <div class="probability-list"></div>
+
+      <div class="section-label">Per-wavelength inference</div>
+      <div class="wavelength-results"></div>
+
+      <div class="metadata-row">
+        <div><span>Session</span><b class="session-id"></b></div>
+        <div><span>Device</span><b class="device-id"></b></div>
+        <div><span>Run result</span><b class="result-index"></b></div>
+      </div>
+      <div class="metadata-row metadata-secondary">
+        <div><span>Analysis run</span><b class="run-id"></b></div>
+        <div><span>Source image</span><b class="source-filename"></b></div>
+      </div>
+
+      <details class="record-details">
+        <summary>View complete Firebase record</summary>
+        <div class="record-key-line"><span>Push key</span><b class="record-key"></b></div>
+        <pre class="raw-json"></pre>
+      </details>
+    </article>
+  </template>
+
+  <div class="toast" id="toast"></div>
+  <script src="app.js"></script>
+</body>
+</html>
